@@ -1,4 +1,4 @@
-# * Copyright (c) 2017 Qualcomm Technologies, Inc.
+# * Copyright (c) 2018 Qualcomm Technologies, Inc.
 #       All Rights Reserved.
 #       Qualcomm Technologies Inc. Confidential and Proprietary.
 #       Notifications and licenses are retained for attribution purposes only.
@@ -19,7 +19,7 @@
 #
 
 # this file is used to prepare the NDK to build with the Snapdragon LLVM ARM
-# 4.0 toolchain any number of source files
+# 6.0 toolchain any number of source files
 #
 # its purpose is to define (or re-define) templates used to build
 # various sources into target object files, libraries or executables.
@@ -32,7 +32,7 @@
 # Override the toolchain prefix
 #
 
-LLVM_VERSION := 4.0
+LLVM_VERSION := 6.0
 LLVM_NAME := llvm-Snapdragon_LLVM_for_Android_$(LLVM_VERSION)
 LLVM_TOOLCHAIN_PREBUILT_ROOT := $(call get-toolchain-root,$(LLVM_NAME))
 LLVM_TOOLCHAIN_PREFIX := $(LLVM_TOOLCHAIN_PREBUILT_ROOT)/bin/
@@ -42,12 +42,12 @@ BINUTILS_ROOT := $(call get-binutils-root,$(NDK_ROOT),$(TOOLCHAIN_NAME))
 TOOLCHAIN_ROOT := $(call get-toolchain-root,$(TOOLCHAIN_NAME)-4.9)
 TOOLCHAIN_PREFIX := $(TOOLCHAIN_ROOT)/bin/$(TOOLCHAIN_NAME)-
 
-TARGET_CC := $(LLVM_TOOLCHAIN_PREFIX)clang$(HOST_EXEEXT)
-TARGET_CXX := $(LLVM_TOOLCHAIN_PREFIX)clang++$(HOST_EXEEXT)
-
 #
 # CFLAGS and LDFLAGS
 #
+
+TARGET_ASAN_BASENAME := libclang_rt.asan-arm-android.so
+TARGET_UBSAN_BASENAME := libclang_rt.ubsan_standalone-arm-android.so
 
 TARGET_CFLAGS := \
     -gcc-toolchain $(call host-path,$(TOOLCHAIN_ROOT)) \
@@ -59,9 +59,6 @@ TARGET_CFLAGS := \
     -Wno-unused-command-line-argument \
     -no-canonical-prefixes
 
-# Disable integrated-as for better compatibility
-TARGET_CFLAGS += -fno-integrated-as
-
 # Always enable debug info. We strip binaries when needed.
 TARGET_CFLAGS += -g
 
@@ -69,37 +66,17 @@ TARGET_LDFLAGS += \
     -gcc-toolchain $(call host-path,$(TOOLCHAIN_ROOT)) \
     -no-canonical-prefixes
 
-ifeq ($(TARGET_ARCH_ABI),armeabi-v7a)
-    LLVM_TRIPLE := armv7-none-linux-androideabi
-    ifneq ($(APP_DEPRECATED_HEADERS),true)
-        LLVM_TRIPLE := $(LLVM_TRIPLE)$(APP_PLATFORM_LEVEL)
-    endif
+LLVM_TRIPLE := armv7-none-linux-androideabi$(APP_PLATFORM_LEVEL)
 
-    TARGET_CFLAGS += -target $(LLVM_TRIPLE) \
-                     -march=armv7-a \
-                     -mfloat-abi=softfp \
-                     -mfpu=vfpv3-d16
+TARGET_CFLAGS += -target $(LLVM_TRIPLE) \
+                 -march=armv7-a \
+                 -mfloat-abi=softfp \
+                 -mfpu=vfpv3-d16
 
-    TARGET_LDFLAGS += -target $(LLVM_TRIPLE) \
-                      -Wl,--fix-cortex-a8
+TARGET_LDFLAGS += -target $(LLVM_TRIPLE) \
+                  -Wl,--fix-cortex-a8
 
-    GCCLIB_SUBDIR := armv7-a
-else ifeq ($(TARGET_ARCH_ABI),armeabi)
-    LLVM_TRIPLE := armv5te-none-linux-androideabi
-    ifneq ($(APP_DEPRECATED_HEADERS),true)
-        LLVM_TRIPLE := $(LLVM_TRIPLE)$(APP_PLATFORM_LEVEL)
-    endif
-
-    TARGET_CFLAGS += -target $(LLVM_TRIPLE) \
-                     -march=armv5te \
-                     -msoft-float
-
-    TARGET_LDFLAGS += -target $(LLVM_TRIPLE)
-
-    GCCLIB_SUBDIR :=
-else
-    $(call __ndk_error,Unsupported ABI: $(TARGET_ARCH_ABI))
-endif
+GCCLIB_SUBDIR := armv7-a
 
 # Append the platform level for __attribute__((availability)).
 LLVM_TRIPLE := $(LLVM_TRIPLE)$(APP_PLATFORM_LEVEL)

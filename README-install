@@ -1,10 +1,10 @@
-Using Snapdragon LLVM ARM Compiler 4.0.2 with Android NDK:
+Using Snapdragon LLVM ARM Compiler 6.0.9 with Android NDK:
 
-The Snapdragon LLVM ARM Compiler 4.0.2 can be used as a drop-in replacement
+The Snapdragon LLVM ARM Compiler 6.0.9 can be used as a drop-in replacement
 for LLVM shipped as part of the Android NDK.
 
-1. Snapdragon LLVM ARM Compiler 4.0.2 has been verified to work with Android
-NDK versions r15c for Windows (64-bit) and Linux (64-bit)
+1. Snapdragon LLVM ARM Compiler 6.0.9 has been verified to work with Android
+NDK versions r17 for Windows (64-bit) and Linux (64-bit)
 
 2. On Windows, it is assumed that the user has Cygwin setup. The examples below
 need to be adjusted to follow the Windows path specifications if Cygwin is not
@@ -13,14 +13,14 @@ used.
 3. On Windows and Linux it is recommended that you extract the Android NDK
 under a directory which *does not* contain spaces, like:
 
-C:\android-ndk-r15c
-/local/mnt/workspace/android-ndk-r15c
+C:\android-ndk-r17
+/local/mnt/workspace/android-ndk-r17
 
 This directory is referred to as <NDK_ROOT> in this README.
 
-On Windows, extract Snapdragon-llvm-4.0.2-windows64.zip under <NDK_ROOT>.
+On Windows, extract Snapdragon-llvm-6.0.9-windows64.zip under <NDK_ROOT>.
 
-On Linux, extract Snapdragon-llvm-4.0.2-linux64.tar.gz under <NDK_ROOT>.
+On Linux, extract Snapdragon-llvm-6.0.9-linux64.tar.gz under <NDK_ROOT>.
 
 4. The following toolchains would be used for linking, by default:
  For ARMv8 32-bit --> arm-linux-androideabi-4.9
@@ -28,10 +28,10 @@ On Linux, extract Snapdragon-llvm-4.0.2-linux64.tar.gz under <NDK_ROOT>.
 
 5. On Windows, in order to avoid errors due to missing MSVC Redistributable
 DLLs, make sure you set PATH to the Snapdragon LLVM bin directory as follows:
-export PATH=<NDK_ROOT>/toolchains/llvm-Snapdragon_LLVM_for_Android_4.0/
+export PATH=<NDK_ROOT>/toolchains/llvm-Snapdragon_LLVM_for_Android_6.0/
 prebuilt/windows-x86_64/bin:$PATH
 
-6. The Snapdragon LLVM ARM 4.0.2 toolchain is designed to work with both 32-bit
+6. The Snapdragon LLVM ARM 6.0.9 toolchain is designed to work with both 32-bit
 and 64-bit versions of the NDK as described below:
 
 For generating ARMv8 32-bit code, invoke your compilation line as follows:
@@ -68,7 +68,7 @@ performance regression.
 
 9. A standalone toolchain for the Android NDK environment using the Snapdragon
 LLVM ARM compiler can be created using the make_standalone_toolchain utility.
-Note: For NDK r15c, the default make_standalone_toolchain.py cannot be used
+Note: For NDK r17, the default make_standalone_toolchain.py cannot be used
 with Snapdragon LLVM toolchain to create a standalone toolchain. So we provide
 a custom script called make_standalone_toolchain_snapdragon_llvm.py.
 
@@ -78,43 +78,41 @@ following commands can be used:
 For ARMv8 32-bit:
 
 <NDK_ROOT>/build/tools/make_standalone_toolchain_snapdragon_llvm.py \
---arch arm --api 26 --install-dir <some_dir>
+--arch arm --api 28 --install-dir <some_dir>
 
-The above command line specifies that you are targeting Android API level 26. If
-you do not sepcify the API level, the default will be set to the minimum
-supported level for the given architecture (currently 9 for 32-bit
+The above command line specifies that you are targeting Android API level 28. If
+you do not specify the API level, the default will be set to the minimum
+supported level for the given architecture (currently 14 for 32-bit
 architectures).
 
 For AArch64:
 
 <NDK_ROOT>/build/tools/make_standalone_toolchain_snapdragon_llvm.py \
---arch arm64 --api 26 --install-dir <some_dir>
+--arch arm64 --api 28 --install-dir <some_dir>
 
-The above command line specifies that you are targeting Android API level 26. If
-you do not sepcify the API level, the default will be set to the minimum
+The above command line specifies that you are targeting Android API level 28. If
+you do not specify the API level, the default will be set to the minimum
 supported level for the given architecture (currently 21 for 64-bit
 architectures).
 
 10. By default, the ndk-build tool will build an application for all the valid
-targets (viz. ARMv8 32-bit, AARCH64, MIPS, X86). This will result in compilation
-errors for MIPS and X86 targets since the Snapdragon LLVM ARM Compiler 4.0.2
-cannot generate code for these targets. The errors can be avoided if the user
+targets (viz. ARMv8 32-bit, AARCH64, X86). This will result in compilation
+errors for X86 targets since the Snapdragon LLVM ARM Compiler 6.0.9 cannot
+generate code for these targets. The errors can be avoided if the user
 explicitly passes APP_ABI="armeabi-v7a" or APP_ABI="arm64-v8a" when using the
-Snapdragon LLVM ARM Compiler 4.0.2. However, in situations where the build
+Snapdragon LLVM ARM Compiler 6.0.9. However, in situations where the build
 system cannot be changed, and hence these flags cannot be set, we provide the
-following wrappers for MIPS and x86 in order to avoid compilation errors:
+following wrappers for x86 in order to avoid compilation errors:
 
-mipsel-linux-android-snapdragonclang
-mips64el-linux-android-snapdragonclang
 x86-snapdragonclang
 x86_64-snapdragonclang
 
 These wrappers are exact copies of their Clang versions which are
 distributed as part of the Android NDK. These wrappers would simply invoke
-the LLVM compiler that comes with NDK (for MIPS and X86 targets only), thus
-avoiding compilation errors when using the Snapdragon LLVM ARM Compiler 4.0.2.
+the LLVM compiler that comes with NDK (for X86 targets only), thus
+avoiding compilation errors when using the Snapdragon LLVM ARM Compiler 6.0.9.
 
-Note: The Snapdragon LLVM ARM Compiler 4.0.2 would be invoked for ARMv8 32-bit and
+Note: The Snapdragon LLVM ARM Compiler 6.0.9 would be invoked for ARMv8 32-bit and
 AARCH64 targets.
 
 Contacts & Bug Reporting

@@ -1,4 +1,4 @@
-# * Copyright (c) 2017 Qualcomm Technologies, Inc.
+# * Copyright (c) 2018 Qualcomm Technologies, Inc.
 #       All Rights Reserved.
 #       Qualcomm Technologies Inc. Confidential and Proprietary.
 #       Notifications and licenses are retained for attribution purposes only.
@@ -18,7 +18,7 @@
 # limitations under the License.
 #
 
-# config file for the arm64 Snapdragon LLVM ARM 4.0 toolchain for the Android
+# config file for the arm64 Snapdragon LLVM ARM 6.0 toolchain for the Android
 # NDK the real meat is in the setup.mk file adjacent to this one
 #
 TOOLCHAIN_ARCH := arm64

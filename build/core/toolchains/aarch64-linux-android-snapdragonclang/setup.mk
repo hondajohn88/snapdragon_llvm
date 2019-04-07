@@ -1,4 +1,4 @@
-# * Copyright (c) 2017 Qualcomm Technologies, Inc.
+# * Copyright (c) 2018 Qualcomm Technologies, Inc.
 #       All Rights Reserved.
 #       Qualcomm Technologies Inc. Confidential and Proprietary.
 #       Notifications and licenses are retained for attribution purposes only.
@@ -19,7 +19,7 @@
 #
 
 # this file is used to prepare the NDK to build with the arm64 Snapdragon LLVM
-# ARM 4.0 toolchain any number of source files
+# ARM 6.0 toolchain any number of source files
 #
 # its purpose is to define (or re-define) templates used to build
 # various sources into target object files, libraries or executables.
@@ -32,7 +32,7 @@
 # Override the toolchain prefix
 #
 
-LLVM_VERSION := 4.0
+LLVM_VERSION := 6.0
 LLVM_NAME := llvm-Snapdragon_LLVM_for_Android_$(LLVM_VERSION)
 LLVM_TOOLCHAIN_PREBUILT_ROOT := $(call get-toolchain-root,$(LLVM_NAME))
 LLVM_TOOLCHAIN_PREFIX := $(LLVM_TOOLCHAIN_PREBUILT_ROOT)/bin/
@@ -42,10 +42,10 @@ BINUTILS_ROOT := $(call get-binutils-root,$(NDK_ROOT),$(TOOLCHAIN_NAME))
 TOOLCHAIN_ROOT := $(call get-toolchain-root,$(TOOLCHAIN_NAME)-4.9)
 TOOLCHAIN_PREFIX := $(TOOLCHAIN_ROOT)/bin/$(TOOLCHAIN_NAME)-
 
-TARGET_CC := $(LLVM_TOOLCHAIN_PREFIX)clang$(HOST_EXEEXT)
-TARGET_CXX := $(LLVM_TOOLCHAIN_PREFIX)clang++$(HOST_EXEEXT)
-
 LLVM_TRIPLE := aarch64-none-linux-android
+
+TARGET_ASAN_BASENAME := libclang_rt.asan-aarch64-android.so
+TARGET_UBSAN_BASENAME := libclang_rt.ubsan_standalone-aarch64-android.so
 
 TARGET_CFLAGS := \
     -gcc-toolchain $(call host-path,$(TOOLCHAIN_ROOT)) \
